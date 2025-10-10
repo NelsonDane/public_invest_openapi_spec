@@ -1,0 +1,2423 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "User Api Gateway REST API",
+    "version": "1"
+  },
+  "servers": [
+    {
+      "url": "https://api.public.com",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/userapigateway/trading/{accountId}/preflight/single-leg": {
+      "post": {
+        "tags": [
+          "preflight-controller"
+        ],
+        "summary": "Calculates the estimated financial impact of a potential trade before execution",
+        "description": "Performs preflight calculations for a single-leg order (a transaction involving a single security) to provide comprehensive cost estimates and account impact details. Returns estimated commission, regulatory fees, order value, buying power requirements, margin impact, and other trade-specific information to help users make informed trading decisions before order placement. Note that these are estimates only, and actual execution values may vary depending on market conditions. This endpoint may be called before submitting an actual order to understand the potential financial implications.",
+        "operationId": "preflightSingleLeg",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightSingleLegRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully calculated preflight estimates",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightSingleLegResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters or account validation failure",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightSingleLegResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/preflight/multi-leg": {
+      "post": {
+        "tags": [
+          "preflight-controller"
+        ],
+        "summary": "Calculates the estimated financial impact of a complex multi-leg trade before execution",
+        "description": "Performs preflight calculations for a multi-leg order (a transaction involving multiple securities or options strategies such as spreads, straddles, or combinations) to provide comprehensive cost estimates and account impact details. Returns estimated commission, regulatory fees, total order value, buying power requirements, margin impact, net credit/debit amounts, and strategy-specific information to help users make informed trading decisions before order placement. This endpoint handles complex options strategies and calculates the combined effect of all legs in the trade. Note that these are estimates only, and actual execution values may vary depending on market conditions and fill prices. This endpoint may be called before submitting an actual multi-leg order to understand the potential financial implications of the strategy.",
+        "operationId": "preflightMultiLeg",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightMultiLegRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully calculated preflight estimates for a given multi-leg strategy",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightMultiLegResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters, unsupported strategy, or account validation failure",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightMultiLegResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/order": {
+      "post": {
+        "tags": [
+          "order-controller"
+        ],
+        "summary": "Create a new order. Placing orders is async, use the GET endpoint to get details about the order.",
+        "operationId": "placeOrder",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiOrderResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If order validation fails",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiOrderResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/order/multileg": {
+      "post": {
+        "tags": [
+          "order-controller"
+        ],
+        "summary": "Create a new multi-leg order. Placing orders is async, use the GET endpoint to get details about the order.",
+        "operationId": "placeMultilegOrder",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiMultilegOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiOrderResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If order validation fails",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiOrderResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/marketdata/{accountId}/quotes": {
+      "post": {
+        "tags": [
+          "quote-controller"
+        ],
+        "summary": "Get quotes",
+        "description": "Requires the `marketdata` scope.\n",
+        "operationId": "getQuotes",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuoteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the instrument is not of type EQUITY or OPTION or does not exist, the account does not exist or the account does not belong to the client",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuoteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/marketdata/{accountId}/option-expirations": {
+      "post": {
+        "tags": [
+          "quote-controller"
+        ],
+        "summary": "Get option expirations",
+        "description": "Requires the `marketdata` scope.\n",
+        "operationId": "getOptionExpirations",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionExpirationsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionExpirationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the instrument is not of type EQUITY or UNDERLYING_SECURITY_FOR_INDEX_OPTION does not exist, the account does not exist or the account does not belong to the client",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionExpirationsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/marketdata/{accountId}/option-chain": {
+      "post": {
+        "tags": [
+          "quote-controller"
+        ],
+        "summary": "Get option chain",
+        "description": "Requires the `marketdata` scope.\n",
+        "operationId": "getOptionChain",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionChainRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionChainResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the instrument is not of type EQUITY or UNDERLYING_SECURITY_FOR_INDEX_OPTION does not exist, the account does not exist or the account does not belong to the client",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionChainResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/user/kyc": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getKycForUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.user.PersonInfoWithAccountKycResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/portfolio": {
+      "get": {
+        "tags": [
+          "portfolio-controller"
+        ],
+        "operationId": "getAccountPortfolio",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccount"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the account does not exist, or belong to the client",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccount"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/portfolio/v2": {
+      "get": {
+        "tags": [
+          "portfolio-controller"
+        ],
+        "summary": "Retrieve an account portfolio details snapshot",
+        "description": "Retrieves a snapshot of a specified account’s portfolio, including positions, equity breakdown, buying power, and open orders. Only non-IRA accounts are supported. The account must exist and belong to the authenticated client.",
+        "operationId": "getAccountPortfolioV2",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Portfolio details successfully retrieved",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccountV2"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found, does not belong to the client, or is of an unsupported type (e.g., IRA)",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccountV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/order/{orderId}": {
+      "get": {
+        "tags": [
+          "order-controller"
+        ],
+        "summary": "Get the details for an order. Placing orders is async, so this endpoint may return 404 if the order has not bee processed yet.",
+        "operationId": "getOrder",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrder"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If the order does not exist (yet)",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrder"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "order-controller"
+        ],
+        "summary": "Cancel the an order. System is async, use the GET endpoint to see when the order is cancelled.",
+        "operationId": "cancelOrder",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/{accountId}/history": {
+      "get": {
+        "tags": [
+          "history-controller"
+        ],
+        "operationId": "getHistory",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "The account ID.",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start timestamp of the history query.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "End timestamp of the history query.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Maximum of items to return. The response can contain fewer items if the events page contains items not relevant for history.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "nextToken",
+            "in": "query",
+            "description": "Token to retrieve the next page of results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.history.GatewayHistoryResponsePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If the account does not exist, or belong to the client",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.history.GatewayHistoryResponsePage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/instruments": {
+      "get": {
+        "tags": [
+          "instrument-controller"
+        ],
+        "summary": "Retrieves all available trading instruments with optional filtering capabilities.",
+        "description": "Retrieves all available trading instruments with optional filtering capabilities.\n\nThis endpoint returns a comprehensive list of instruments available for trading,\nwith support for filtering by security type and various trading capabilities.\nAll filter parameters are optional and can be combined to narrow down results.",
+        "operationId": "getAllInstruments",
+        "parameters": [
+          {
+            "name": "typeFilter",
+            "in": "query",
+            "description": "optional set of security types to filter by ([GatewaySecurityType])",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "EQUITY",
+                  "OPTION",
+                  "MULTI_LEG_INSTRUMENT",
+                  "CRYPTO",
+                  "ALT",
+                  "TREASURY",
+                  "BOND",
+                  "INDEX"
+                ]
+              }
+            }
+          },
+          {
+            "name": "tradingFilter",
+            "in": "query",
+            "description": "optional set of trading statuses to filter by ([ApiInstrumentDto.Trading])",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUY_AND_SELL",
+                  "LIQUIDATION_ONLY",
+                  "DISABLED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "fractionalTradingFilter",
+            "in": "query",
+            "description": "optional set of fractional trading statuses to filter by ([ApiInstrumentDto.Trading])",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUY_AND_SELL",
+                  "LIQUIDATION_ONLY",
+                  "DISABLED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "optionTradingFilter",
+            "in": "query",
+            "description": "optional set of option trading statuses to filter by ([ApiInstrumentDto.Trading])",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUY_AND_SELL",
+                  "LIQUIDATION_ONLY",
+                  "DISABLED"
+                ]
+              }
+            }
+          },
+          {
+            "name": "optionSpreadTradingFilter",
+            "in": "query",
+            "description": "optional set of option spread trading statuses to filter by ([ApiInstrumentDto.Trading])",
+            "required": false,
+            "schema": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUY_AND_SELL",
+                  "LIQUIDATION_ONLY",
+                  "DISABLED"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of instruments matching the specified filters ([ApiInstrumentResponse])",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiInstrumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/instruments/{symbol}/{type}": {
+      "get": {
+        "tags": [
+          "instrument-controller"
+        ],
+        "operationId": "getInstrument",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "EQUITY",
+                "OPTION",
+                "MULTI_LEG_INSTRUMENT",
+                "CRYPTO",
+                "ALT",
+                "TREASURY",
+                "BOND",
+                "INDEX"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiInstrumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/account": {
+      "get": {
+        "tags": [
+          "account-controller"
+        ],
+        "summary": "Get accounts",
+        "description": "Retrieves the list of financial accounts associated with the authenticated user.\nThis includes brokerage, retirement, and high-yield cash accounts.\n\nThe response contains account objects that represent each available account.\n\nNote: The `accountId` returned by this endpoint is required for most subsequent API operations.\nIt serves as a stable, persistent identifier for the lifetime of the account.\n",
+        "operationId": "getAccounts",
+        "responses": {
+          "200": {
+            "description": "Accounts retrieved successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.account.AccountSettingsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.account.AccountSettingsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No accounts found for the user",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.account.AccountSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/trading/account/first-interactions": {
+      "get": {
+        "tags": [
+          "account-controller"
+        ],
+        "operationId": "firstMemberInteractions",
+        "responses": {
+          "200": {
+            "description": "Object with data about the members first interactions",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.account.FirstMemberInteractions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userapigateway/portfolio": {
+      "get": {
+        "tags": [
+          "old-portfolio-controller"
+        ],
+        "summary": "Deprecated use /userapigateway/trading/{accountId}/portfolio instead",
+        "description": "Deprecated use /userapigateway/trading/{accountId}/portfolio instead",
+        "operationId": "getPortfolio",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument": {
+        "required": [
+          "symbol",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EQUITY",
+              "OPTION",
+              "MULTI_LEG_INSTRUMENT",
+              "CRYPTO",
+              "ALT",
+              "TREASURY",
+              "BOND",
+              "INDEX"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.order.OrderExpiration": {
+        "required": [
+          "timeInForce"
+        ],
+        "type": "object",
+        "properties": {
+          "timeInForce": {
+            "type": "string",
+            "description": "The time in for the order",
+            "enum": [
+              "DAY",
+              "GTD"
+            ]
+          },
+          "expirationTime": {
+            "type": "string",
+            "description": "The expiration date. Only used when timeInForce is GTD, cannot be more than 90 days in the future",
+            "format": "date-time"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.PreflightSingleLegRequest": {
+        "required": [
+          "expiration",
+          "instrument",
+          "orderSide",
+          "orderType"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "orderSide": {
+            "type": "string",
+            "description": "The Order Side BUY/SELL. For Options also include the openCloseIndicator",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "orderType": {
+            "type": "string",
+            "description": "The Type of order",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP",
+              "STOP_LIMIT"
+            ]
+          },
+          "expiration": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.OrderExpiration"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "The order quantity. Used when buying/selling whole shares and when selling fractional.\nMutually exclusive with `amount`"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The order amount. Used when buying/selling shares for a specific notional value"
+          },
+          "limitPrice": {
+            "type": "string",
+            "description": "The limit price. Used when orderType = LIMIT or orderType = STOP_LIMIT"
+          },
+          "stopPrice": {
+            "type": "string",
+            "description": "The stop price. Used when orderType = STOP or orderType = STOP_LIMIT"
+          },
+          "openCloseIndicator": {
+            "type": "string",
+            "description": "Used for options only. Indicates if this is BUY to OPEN/CLOSE",
+            "enum": [
+              "OPEN",
+              "CLOSE"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginImpact": {
+        "type": "object",
+        "properties": {
+          "marginUsageImpact": {
+            "type": "string"
+          },
+          "initialMarginRequirement": {
+            "type": "string"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginRequirement": {
+        "type": "object",
+        "properties": {
+          "longMaintenanceRequirement": {
+            "type": "string"
+          },
+          "longInitialRequirement": {
+            "type": "string"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayOptionDetails": {
+        "required": [
+          "baseSymbol",
+          "optionExpireDate",
+          "strikePrice",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "baseSymbol": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CALL",
+              "PUT"
+            ]
+          },
+          "strikePrice": {
+            "type": "string"
+          },
+          "optionExpireDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayOptionRebate": {
+        "type": "object",
+        "properties": {
+          "estimatedOptionRebate": {
+            "type": "string"
+          },
+          "optionRebatePercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "perContractRebate": {
+            "type": "string"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayPriceIncrement": {
+        "type": "object",
+        "properties": {
+          "incrementBelow3": {
+            "type": "string"
+          },
+          "incrementAbove3": {
+            "type": "string"
+          },
+          "currentIncrement": {
+            "type": "string"
+          }
+        },
+        "description": "Price increment information for option orders."
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.GatewayRegulatoryFees": {
+        "type": "object",
+        "properties": {
+          "secFee": {
+            "type": "string"
+          },
+          "tafFee": {
+            "type": "string"
+          },
+          "orfFee": {
+            "type": "string"
+          },
+          "exchangeFee": {
+            "type": "string"
+          },
+          "occFee": {
+            "type": "string"
+          },
+          "catFee": {
+            "type": "string"
+          }
+        },
+        "description": "# GatewayRegulatoryFees\nRepresents various regulatory fees associated with trading orders.\n<br/>\n## Fields\n- **secFee** - The SEC charges a regulatory fee for sell orders that execute. The fee is based on the dollar amount of the order.\n- **tafFee** - The Trading Activity Fee is a FINRA fee. The fee is based on the order quantity.\n- **orfFee** - The Options Regulatory Fee (ORF). This is the combined exchange fee rate for all exchanges. Changes monthly.\n- **exchangeFee** - The exchange charges a fee for executing orders for index options.\n- **occFee** - The Options Clearing Corporation Fee (OCC)\n- **catFee** - The Consolidated Audit Trail Fee (CAT)"
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.PreflightSingleLegResponse": {
+        "required": [
+          "instrument",
+          "orderValue"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "cusip": {
+            "type": "string"
+          },
+          "rootSymbol": {
+            "type": "string"
+          },
+          "rootOptionSymbol": {
+            "type": "string"
+          },
+          "estimatedCommission": {
+            "type": "string"
+          },
+          "regulatoryFees": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayRegulatoryFees"
+          },
+          "estimatedIndexOptionFee": {
+            "type": "string"
+          },
+          "orderValue": {
+            "type": "string"
+          },
+          "estimatedQuantity": {
+            "type": "string"
+          },
+          "estimatedCost": {
+            "type": "string"
+          },
+          "buyingPowerRequirement": {
+            "type": "string"
+          },
+          "estimatedProceeds": {
+            "type": "string"
+          },
+          "optionDetails": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayOptionDetails"
+          },
+          "estimatedOrderRebate": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayOptionRebate"
+          },
+          "marginRequirement": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginRequirement"
+          },
+          "marginImpact": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginImpact"
+          },
+          "priceIncrement": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayPriceIncrement"
+          }
+        },
+        "description": "# PreflightSingleLegResponse\nResponse containing estimated costs, fees, and other information needed before placing a single-leg order.\n\n## Fields\n\n### Instrument Information\n- **symbol** - The trading symbol for the instrument\n- **cusip** - The CUSIP identifier for the instrument (if applicable)\n- **securityType** - The type of security (EQUITY, OPTION, BOND, etc.)\n- **rootSymbol** - The root symbol for options and other derivatives\n- **rootOptionSymbol** - The root option symbol for option chains\n\n### Cost and Fee Information\n- **estimatedCommission** - The estimated commission amount that will be charged if the order executes\n- **regulatoryFees** - Gateway regulatory fees breakdown including SEC, TAF, ORF, OCC, CAT fees\n- **estimatedCost** - The total estimated cost including all fees and commissions\n- **buyingPowerRequirement** - The buying power required for this order\n\n### Order Details\n- **orderValue** - The estimated order value, excluding fees and commission\n- **estimatedQuantity** - For quantity orders this is exact, for amount-based orders this is an estimate\n- **estimatedProceeds** - The estimated proceeds from the order (for sell orders)\n\n### Option-Specific Information\n- **optionDetails** - Consolidated option-specific details including strike price, expiration, rebates, and fees\n- **priceIncrement** - Price increment information for option orders"
+      },
+      "com.hellopublic.userapigateway.api.rest.order.GatewayLegInstrument": {
+        "required": [
+          "symbol",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EQUITY",
+              "OPTION"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.order.GatewayOrderLeg": {
+        "required": [
+          "instrument",
+          "side"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayLegInstrument"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "openCloseIndicator": {
+            "type": "string",
+            "description": "required when instrument.type = OPTION, used to determine if the leg is buy-to-open or buy-to-close",
+            "enum": [
+              "OPEN",
+              "CLOSE"
+            ]
+          },
+          "ratioQuantity": {
+            "type": "integer",
+            "description": "The ratio between legs. Equity legs will typically be 100 shares, and option legs 1 contract",
+            "format": "int32"
+          }
+        },
+        "description": "Option or equity leg. There can never be more than 1 equity leg."
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.PreflightMultiLegRequest": {
+        "required": [
+          "expiration",
+          "legs",
+          "limitPrice",
+          "orderType"
+        ],
+        "type": "object",
+        "properties": {
+          "orderType": {
+            "type": "string",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP",
+              "STOP_LIMIT"
+            ]
+          },
+          "expiration": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.OrderExpiration"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "limitPrice": {
+            "type": "string"
+          },
+          "legs": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderLeg"
+            }
+          }
+        },
+        "description": "# PreflightMultiLegRequest\nRequest for preflight calculations on multi-leg orders.\n\n## Fields\n- **orderType** - The type of order (only LIMIT orders are allowed for multi-leg)\n- **expiration** - The order expiration configuration\n- **quantity** - The order quantity (number of strategies)\n- **limitPrice** - The limit price for the order (required for LIMIT orders)\n- **legs** - List of order legs (2-6 legs allowed, at most 1 equity leg)\n- **equityMarketSession** - The market session for equity legs"
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.PreflightLegResponse": {
+        "required": [
+          "instrument",
+          "ratioQuantity",
+          "side"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "openCloseIndicator": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "CLOSE"
+            ]
+          },
+          "ratioQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "optionDetails": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayOptionDetails"
+          }
+        },
+        "description": "# PreflightLegResponse\nResponse containing information about an individual leg in a multi-leg order preflight calculation.\n\n## Fields\n\n### Instrument Information\n- **instrument** - The trading instrument for this leg\n- **side** - The order side (BUY/SELL) for this leg\n- **openCloseIndicator** - Position effect for option legs (BUY_TO_OPEN, BUY_TO_CLOSE, etc.)\n- **ratioQuantity** - The ratio quantity for this leg in the strategy\n\n### Cost and Fee Information\n- **estimatedCommission** - The estimated commission for this specific leg\n- **estimatedCost** - The estimated cost for this leg including fees\n- **estimatedProceeds** - The estimated proceeds for this leg (for sell legs)\n\n### Option-Specific Information\n- **optionDetails** - Option-specific details like strike price, expiration, fees, and rebates"
+      },
+      "com.hellopublic.userapigateway.api.rest.preflight.PreflightMultiLegResponse": {
+        "required": [
+          "baseSymbol",
+          "legs",
+          "orderValue"
+        ],
+        "type": "object",
+        "properties": {
+          "baseSymbol": {
+            "type": "string"
+          },
+          "strategyName": {
+            "type": "string"
+          },
+          "legs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.PreflightLegResponse"
+            }
+          },
+          "estimatedCommission": {
+            "type": "string"
+          },
+          "regulatoryFees": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayRegulatoryFees"
+          },
+          "estimatedIndexOptionFee": {
+            "type": "string"
+          },
+          "orderValue": {
+            "type": "string"
+          },
+          "estimatedQuantity": {
+            "type": "string"
+          },
+          "estimatedCost": {
+            "type": "string"
+          },
+          "buyingPowerRequirement": {
+            "type": "string"
+          },
+          "estimatedProceeds": {
+            "type": "string"
+          },
+          "marginRequirement": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginRequirement"
+          },
+          "marginImpact": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayMarginImpact"
+          },
+          "priceIncrement": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.preflight.GatewayPriceIncrement"
+          }
+        },
+        "description": "# PreflightMultiLegResponse\nResponse containing estimated costs, fees, and other information needed before placing a multi-leg order.\n\n## Fields\n\n### Strategy Information\n- **baseSymbol** - The base symbol for the multi-leg strategy (e.g., \"TSLA\" for Tesla options)\n- **strategyName** - The name of the strategy (e.g., \"Call Spread\", \"Iron Condor\")\n- **legs** - List of individual leg details for the strategy\n\n### Cost and Fee Information\n- **estimatedCommission** - The estimated commission amount that will be charged if the order executes\n- **regulatoryFees** - Gateway regulatory fees breakdown including SEC, TAF, ORF, OCC, CAT fees\n- **estimatedIndexOptionFee** - Estimated index option fees (if applicable)\n- **estimatedCost** - The total estimated cost including all fees and commissions\n- **buyingPowerRequirement** - The buying power required for this multi-leg order\n\n### Order Details\n- **orderValue** - The estimated order value, excluding fees and commission\n- **estimatedQuantity** - The number of strategies that will be executed\n- **estimatedProceeds** - The estimated proceeds from the order (for credit spreads)\n\n### Option-Specific Information\n- **marginRequirement** - Margin requirements for the multi-leg strategy\n- **marginImpact** - Impact on account margin usage\n- **priceIncrement** - Price increment information for option orders"
+      },
+      "com.hellopublic.userapigateway.api.rest.order.ApiOrderRequest": {
+        "required": [
+          "expiration",
+          "instrument",
+          "orderId",
+          "orderSide",
+          "orderType"
+        ],
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "The OrderId, globally unique over time. This is also the deduplication key, if it is reused (on the same account) the operation is idempotent.\n If you re-submit the order because of a read timeout, do not edit any properties. If the order was placed on the first request, altering properties\n will not have an effect.",
+            "format": "uuid"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "orderSide": {
+            "type": "string",
+            "description": "The Order Side BUY/SELL. For Options also include the openCloseIndicator",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "orderType": {
+            "type": "string",
+            "description": "The Type of order",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP",
+              "STOP_LIMIT"
+            ]
+          },
+          "expiration": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.OrderExpiration"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "The order quantity. Used when buying/selling whole shares and when selling fractional.\n Mutually exclusive with `amount`"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The order amount. Used when buying/selling shares for a specific notional value"
+          },
+          "limitPrice": {
+            "type": "string",
+            "description": "The limit price. Used when orderType = LIMIT or orderType = STOP_LIMIT"
+          },
+          "stopPrice": {
+            "type": "string",
+            "description": "The stop price. Used when orderType = STOP or orderType = STOP_LIMIT"
+          },
+          "openCloseIndicator": {
+            "type": "string",
+            "description": "Used for options only. Indicates if this is BUY to OPEN/CLOSE",
+            "enum": [
+              "OPEN",
+              "CLOSE"
+            ]
+          }
+        },
+        "description": "Used for orders placed via the UserApiGatewayService or other service where the order is just a single request and the orderId is generated by the client"
+      },
+      "com.hellopublic.userapigateway.api.rest.order.ApiOrderResult": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.order.ApiMultilegOrderRequest": {
+        "required": [
+          "expiration",
+          "legs",
+          "limitPrice",
+          "orderId",
+          "quantity",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "description": "The OrderId, globally unique over time. This is also the deduplication key, if it is reused (on the same account) the operation is idempotent",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "The order quantity",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string",
+            "description": "The order type. Only LIMIT order are allowed",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP",
+              "STOP_LIMIT"
+            ]
+          },
+          "limitPrice": {
+            "type": "string",
+            "description": "The limit price for the order. For debit spreads the limit price must be positive, for create spreads the limit price is negative"
+          },
+          "expiration": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.OrderExpiration"
+          },
+          "legs": {
+            "minItems": 1,
+            "type": "array",
+            "description": "From 2-6 legs. There can be at most 1 equity leg",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderLeg"
+            }
+          }
+        },
+        "description": "Used for multileg orders placed via the UserApiGatewayService or other service where the order is just a single request and the orderId is generated by the client"
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuoteRequest": {
+        "type": "object",
+        "properties": {
+          "instruments": {
+            "type": "array",
+            "description": "List of instruments to query quotes.",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuote": {
+        "required": [
+          "instrument",
+          "outcome"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "outcome": {
+            "type": "string",
+            "description": "The outcome status of the quote request.",
+            "enum": [
+              "SUCCESS",
+              "UNKNOWN"
+            ]
+          },
+          "last": {
+            "type": "string",
+            "description": "The last traded price of the instrument. Can be null if no trades have occurred."
+          },
+          "lastTimestamp": {
+            "type": "string",
+            "description": "Timestamp of when the last trade occurred. Can be null if no trades have occurred.",
+            "format": "date-time"
+          },
+          "bid": {
+            "type": "string",
+            "description": "The current bid price (buying price) in the market. Can be null if no bid exists."
+          },
+          "bidSize": {
+            "type": "integer",
+            "description": "Number of shares, contracts, or units available at the given bid price.",
+            "format": "int32"
+          },
+          "bidTimestamp": {
+            "type": "string",
+            "description": "Timestamp of when the bid price was last updated. Can be null if no bid exists.",
+            "format": "date-time"
+          },
+          "ask": {
+            "type": "string",
+            "description": "The current ask price (selling price) in the market. Can be null if no ask exists."
+          },
+          "askSize": {
+            "type": "integer",
+            "description": "Number of shares, contracts, or units available at the given ask price.",
+            "format": "int32"
+          },
+          "askTimestamp": {
+            "type": "string",
+            "description": "Timestamp of when the ask price was last updated. Can be null if no ask exists.",
+            "format": "date-time"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuoteResponse": {
+        "type": "object",
+        "properties": {
+          "quotes": {
+            "type": "array",
+            "description": "List of quotes",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuote"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionExpirationsRequest": {
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionExpirationsResponse": {
+        "type": "object",
+        "properties": {
+          "baseSymbol": {
+            "type": "string",
+            "description": "The base symbol for which the option expirations belong."
+          },
+          "expirations": {
+            "type": "array",
+            "description": "List of option expirations for the given symbol.",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionChainRequest": {
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "expirationDate": {
+            "type": "string",
+            "description": "The expiration date of the option chain.",
+            "format": "date"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayOptionChainResponse": {
+        "type": "object",
+        "properties": {
+          "baseSymbol": {
+            "type": "string",
+            "description": "The base symbol for which the option chain belongs."
+          },
+          "calls": {
+            "type": "array",
+            "description": "List of call quotes for the given option chain.",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuote"
+            }
+          },
+          "puts": {
+            "type": "array",
+            "description": "List of put quotes for the given option chain.",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.marketdata.quote.GatewayQuote"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.user.AccountKyc": {
+        "required": [
+          "accountNumber",
+          "accountType"
+        ],
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "BROKERAGE",
+              "HIGH_YIELD",
+              "BOND_ACCOUNT",
+              "RIA_ASSET",
+              "TREASURY"
+            ]
+          },
+          "objective": {
+            "type": "string",
+            "enum": [
+              "GROWTH_INCOME",
+              "GROWTH",
+              "INCOME",
+              "CAPITAL_PRESERVATION",
+              "SPECULATION",
+              "MAXIMUM_GROWTH",
+              "BALANCED",
+              "OTHER"
+            ]
+          },
+          "riskTolerance": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.user.PersonInfo": {
+        "required": [
+          "address",
+          "dateOfBirth",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.user.PersonInfo.Name"
+          },
+          "address": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.user.PersonInfo.Address"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.user.PersonInfo.Address": {
+        "type": "object",
+        "properties": {
+          "street1": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "street2": {
+            "type": "string"
+          },
+          "city": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "zipCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "state": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "country": {
+            "minLength": 1,
+            "type": "string"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.user.PersonInfo.Name": {
+        "required": [
+          "first",
+          "last"
+        ],
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "string"
+          },
+          "last": {
+            "type": "string"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.user.PersonInfoWithAccountKycResponse": {
+        "required": [
+          "person"
+        ],
+        "type": "object",
+        "properties": {
+          "person": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.user.PersonInfo"
+          },
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.user.AccountKyc"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.order.GatewayOrder": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Creation time of the order",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "MARKET",
+              "LIMIT",
+              "STOP",
+              "STOP_LIMIT"
+            ]
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "PARTIALLY_FILLED",
+              "CANCELLED",
+              "QUEUED_CANCELLED",
+              "FILLED",
+              "REJECTED",
+              "PENDING_REPLACE",
+              "PENDING_CANCEL",
+              "EXPIRED",
+              "REPLACED"
+            ]
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantity of the order, mutually exclusive with notional value"
+          },
+          "notionalValue": {
+            "type": "string",
+            "description": "Notional value (dollar amount) of the order, mutually exclusive with quantity"
+          },
+          "expiration": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.OrderExpiration"
+          },
+          "limitPrice": {
+            "type": "string",
+            "description": "Present if type = LIMIT"
+          },
+          "stopPrice": {
+            "type": "string",
+            "description": "Present if type = STOP"
+          },
+          "closedAt": {
+            "type": "string",
+            "description": "The time the order reached a terminal state, like CANCELLED, FILLED, REJECTED, REPLACED",
+            "format": "date-time"
+          },
+          "openCloseIndicator": {
+            "type": "string",
+            "description": "Present if the order is a single-leg option order",
+            "enum": [
+              "OPEN",
+              "CLOSE"
+            ]
+          },
+          "filledQuantity": {
+            "type": "string",
+            "description": "The filled quantity of the order, present if the order had at least one trade"
+          },
+          "averagePrice": {
+            "type": "string",
+            "description": "The average price per unit, present if the order had at least one trade"
+          },
+          "legs": {
+            "type": "array",
+            "description": "If instrument.type = MULTI_LEG_INSTRUMENT, this contains the list of legs",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderLeg"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.Gain": {
+        "type": "object",
+        "properties": {
+          "gainValue": {
+            "type": "string"
+          },
+          "gainPercentage": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayBuyingPower": {
+        "required": [
+          "buyingPower",
+          "cashOnlyBuyingPower",
+          "optionsBuyingPower"
+        ],
+        "type": "object",
+        "properties": {
+          "cashOnlyBuyingPower": {
+            "type": "string",
+            "description": "Buying power available for trading on cash only without taking loans."
+          },
+          "buyingPower": {
+            "type": "string",
+            "description": "Buying power available for trading marginable assets."
+          },
+          "optionsBuyingPower": {
+            "type": "string",
+            "description": "Buying power available for trading options."
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayCostBasis": {
+        "type": "object",
+        "properties": {
+          "totalCost": {
+            "type": "string",
+            "description": "What is the dollars paid for entering this position"
+          },
+          "unitCost": {
+            "type": "string",
+            "description": "Totalcost divided by the quantity."
+          },
+          "gainValue": {
+            "type": "string",
+            "description": "Amount of dollars this position gained or lost. Current value - total cost"
+          },
+          "gainPercentage": {
+            "type": "string",
+            "description": "100*gainValue/totalcost"
+          },
+          "lastUpdate": {
+            "type": "string",
+            "description": "When was the cost cases last updated.",
+            "format": "date-time"
+          }
+        },
+        "description": "Cost basis of a position. What the member paid for entering the position. The cost basis is\n based on tax lots and will factor in wash sales."
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccount": {
+        "required": [
+          "accountId",
+          "accountName",
+          "accountType",
+          "buyingPower",
+          "equity",
+          "orders",
+          "positions"
+        ],
+        "type": "object",
+        "properties": {
+          "accountName": {
+            "type": "string",
+            "description": "Name of the account"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Id of the account"
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Type of the account",
+            "enum": [
+              "BROKERAGE",
+              "HIGH_YIELD",
+              "BOND_ACCOUNT",
+              "RIA_ASSET",
+              "TREASURY"
+            ]
+          },
+          "buyingPower": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayBuyingPower"
+          },
+          "equity": {
+            "type": "array",
+            "description": "List of equity summaries",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioEquity"
+            }
+          },
+          "positions": {
+            "type": "array",
+            "description": "List of positions",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioPosition"
+            }
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrder"
+            }
+          }
+        },
+        "description": "Portfolio for the account"
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioEquity": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of asset.",
+            "enum": [
+              "STOCK",
+              "OPTIONS_LONG",
+              "OPTIONS_SHORT",
+              "BONDS",
+              "CRYPTO",
+              "ALT",
+              "TREASURY_ACCOUNT",
+              "JIKO",
+              "HIGH_YIELD_ACCOUNT",
+              "BOND_ACCOUNT",
+              "CASH"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "Total value for the given asset type."
+          },
+          "percentageOfPortfolio": {
+            "type": "string",
+            "description": "The percentage of the portfolio this asset type constitutes.\n                               Percentage number is given with 2 decimals."
+          }
+        },
+        "description": "Portfolio equity summary"
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioInstrument": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EQUITY",
+              "OPTION",
+              "CRYPTO",
+              "ALT",
+              "TREASURY",
+              "BOND",
+              "INDEX"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioPosition": {
+        "required": [
+          "instrument",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioInstrument"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "The quantity of the position."
+          },
+          "openedAt": {
+            "type": "string",
+            "description": "When was this position opened. Null if unknown.",
+            "format": "date-time"
+          },
+          "currentValue": {
+            "type": "string",
+            "description": "How much the position is worth. Calculated from quantity * lastSalePrice."
+          },
+          "percentOfPortfolio": {
+            "type": "string",
+            "description": "The percent that this position makes of the entire portfolio."
+          },
+          "lastPrice": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.Price"
+          },
+          "instrumentGain": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.Gain"
+          },
+          "positionDailyGain": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.Gain"
+          },
+          "costBasis": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayCostBasis"
+          }
+        },
+        "description": "Position in portfolio"
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.Price": {
+        "type": "object",
+        "properties": {
+          "lastPrice": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccountV2": {
+        "required": [
+          "accountId",
+          "accountType",
+          "buyingPower",
+          "equity",
+          "orders",
+          "positions"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "Id of the account"
+          },
+          "accountType": {
+            "type": "string",
+            "description": "Type of the account",
+            "enum": [
+              "BROKERAGE",
+              "HIGH_YIELD",
+              "BOND_ACCOUNT",
+              "RIA_ASSET",
+              "TREASURY"
+            ]
+          },
+          "buyingPower": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayBuyingPower"
+          },
+          "equity": {
+            "type": "array",
+            "description": "List of equity summaries",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioEquityV2"
+            }
+          },
+          "positions": {
+            "type": "array",
+            "description": "List of positions",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioPosition"
+            }
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrder"
+            }
+          }
+        },
+        "description": "Portfolio for the account"
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioEquityV2": {
+        "required": [
+          "type",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of asset.",
+            "enum": [
+              "CASH",
+              "STOCK",
+              "OPTIONS_LONG",
+              "OPTIONS_SHORT",
+              "BONDS",
+              "CRYPTO"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "description": "Total value for the given asset type."
+          },
+          "percentageOfPortfolio": {
+            "type": "string",
+            "description": "The percentage of the portfolio this asset type constitutes.\n                              The percentage number is given with 2 decimals."
+          }
+        },
+        "description": "Portfolio equity summary"
+      },
+      "com.hellopublic.userapigateway.api.rest.history.GatewayHistoryResponsePage": {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "type": "array",
+            "description": "List of transactions",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.history.GatewayHistoryTransaction"
+            }
+          },
+          "nextToken": {
+            "type": "string",
+            "description": "Token to retrieve the next page of results"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start timestamp of the history query",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "description": "End timestamp of the history query",
+            "format": "date-time"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Number of items to return",
+            "format": "int32"
+          }
+        },
+        "description": "Gateway history response page"
+      },
+      "com.hellopublic.userapigateway.api.rest.history.GatewayHistoryTransaction": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "The timestamp when the transaction happened",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the transaction"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the transaction",
+            "enum": [
+              "TRADE",
+              "MONEY_MOVEMENT",
+              "POSITION_ADJUSTMENT"
+            ]
+          },
+          "subType": {
+            "type": "string",
+            "description": "The subtype of the transaction",
+            "enum": [
+              "DEPOSIT",
+              "WITHDRAWAL",
+              "DEPOSIT_RETURNED",
+              "WITHDRAWAL_RETURNED",
+              "DIVIDEND",
+              "FEE",
+              "REWARD",
+              "TREASURY_BILL_TRANSFER",
+              "INTEREST",
+              "TRADE",
+              "TRANSFER",
+              "MISC"
+            ]
+          },
+          "accountNumber": {
+            "type": "string",
+            "description": "The account the transaction happened on"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "The symbol of the transaction"
+          },
+          "securityType": {
+            "type": "string",
+            "description": "The security type of the transaction",
+            "enum": [
+              "EQUITY",
+              "OPTION",
+              "CRYPTO",
+              "ALT",
+              "TREASURY",
+              "BOND"
+            ]
+          },
+          "side": {
+            "type": "string",
+            "description": "The side of the transaction - relevant for trades",
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the transaction"
+          },
+          "netAmount": {
+            "type": "string",
+            "description": "The net amount of the transaction"
+          },
+          "principalAmount": {
+            "type": "string",
+            "description": "The principal amount of the transaction"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "The quantity of the transaction"
+          },
+          "direction": {
+            "type": "string",
+            "description": "The direction of the transaction",
+            "enum": [
+              "INCOMING",
+              "OUTGOING"
+            ]
+          },
+          "fees": {
+            "type": "string",
+            "description": "The fees of the transaction"
+          }
+        },
+        "description": "Represents a transaction in the history of an account"
+      },
+      "com.hellopublic.userapigateway.api.rest.order.ApiInstrumentDto": {
+        "required": [
+          "fractionalTrading",
+          "instrument",
+          "optionSpreadTrading",
+          "optionTrading",
+          "trading"
+        ],
+        "type": "object",
+        "properties": {
+          "instrument": {
+            "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.GatewayOrderInstrument"
+          },
+          "trading": {
+            "type": "string",
+            "enum": [
+              "BUY_AND_SELL",
+              "LIQUIDATION_ONLY",
+              "DISABLED"
+            ]
+          },
+          "fractionalTrading": {
+            "type": "string",
+            "enum": [
+              "BUY_AND_SELL",
+              "LIQUIDATION_ONLY",
+              "DISABLED"
+            ]
+          },
+          "optionTrading": {
+            "type": "string",
+            "enum": [
+              "BUY_AND_SELL",
+              "LIQUIDATION_ONLY",
+              "DISABLED"
+            ]
+          },
+          "optionSpreadTrading": {
+            "type": "string",
+            "enum": [
+              "BUY_AND_SELL",
+              "LIQUIDATION_ONLY",
+              "DISABLED"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.order.ApiInstrumentResponse": {
+        "type": "object",
+        "properties": {
+          "instruments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.order.ApiInstrumentDto"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.account.AccountSettings": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "BROKERAGE",
+              "HIGH_YIELD",
+              "BOND_ACCOUNT",
+              "RIA_ASSET",
+              "TREASURY"
+            ]
+          },
+          "optionsLevel": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "LEVEL_1",
+              "LEVEL_2",
+              "LEVEL_3",
+              "LEVEL_4"
+            ]
+          },
+          "brokerageAccountType": {
+            "type": "string",
+            "enum": [
+              "CASH",
+              "MARGIN"
+            ]
+          },
+          "tradePermissions": {
+            "type": "string",
+            "enum": [
+              "BUY_AND_SELL",
+              "RESTRICTED_SETTLED_FUNDS_ONLY",
+              "RESTRICTED_CLOSE_ONLY",
+              "RESTRICTED_NO_TRADING"
+            ]
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.account.AccountSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.account.AccountSettings"
+            }
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.account.FirstMemberInteractions": {
+        "required": [
+          "accountCreated"
+        ],
+        "type": "object",
+        "properties": {
+          "accountCreated": {
+            "type": "string",
+            "description": "The timestamp of the first created account for this member",
+            "format": "date-time"
+          },
+          "firstMoneyMovement": {
+            "type": "string",
+            "description": "The timestamp of the first money movement, either a deposit or an incoming ACAT",
+            "format": "date-time"
+          }
+        }
+      },
+      "com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioResponse": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "description": "List of portfolios",
+            "items": {
+              "$ref": "#/components/schemas/com.hellopublic.userapigateway.api.rest.portfolio.GatewayPortfolioAccount"
+            }
+          }
+        }
+      }
+    }
+  }
+}
